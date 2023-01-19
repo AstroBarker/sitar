@@ -4,6 +4,6 @@
 #include "Abstractions.hpp"
 #include "Constants.hpp"
 
-Real f( Real T, Real Ur, Real Urp1, Real chi );
+Real f( Real T, Atom atom, int n );
 
 #endif // _SAHA_HPP_

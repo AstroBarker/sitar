@@ -3,12 +3,12 @@
 
 #include <vector>
 
-#include "Abstractcions.hpp"
+#include "Abstractions.hpp"
 
-struct AtomicIon {
-  int stage; // ionization stage ( 0 is neutral )
-  int g; // statistical weight
-  Real chi; // ionization potential, eV
-}
+struct Atom {
+  int Z;
+  std::vector<int> g; // statistical weights. 0 is ground state
+  std::vector<Real> chi; // ionization potential, eV
+};
 
 #endif // _ATOM_HPP_
