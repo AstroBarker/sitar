@@ -1,2 +1,4 @@
 # 1DSaha
-one dimensional Saha ionization solver
+playing with making a one dimensional Saha ionization solver
+
+
