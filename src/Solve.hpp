@@ -1,6 +1,6 @@
 /**
- * File  : anderson.hpp
- * Author : Brandon Barker
+ * File    : Solve.hpp
+ * Author  : Brandon Barker
  * Purpose : Implement Anderson-accelerated fixed point iteration
  * TODO: do the Anderson acceleration...
  **/
@@ -29,7 +29,7 @@ T FixedPointSolve( F target, T x0, Args... args ) {
     n += 1;
 
     if ( n == MAX_ITERS ) {
-      printf( " ! Not Converged ! \n" );
+      std::printf( " ! Not Converged ! \n" );
     }
   }
 
