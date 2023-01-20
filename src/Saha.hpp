@@ -7,11 +7,13 @@
 Real f( Real T, Atom atom, int n );
 Real Target( Real Zbar, Real T, Atom atom, Real nh );
 
-template < int p >
+//Real SahaSolve( Real Temp, Atom atom, Real nh );
+
+template < int p > inline
 Real IonFrac( Real Zbar, Real Temp, Atom atom, Real nh );
 
 /* un-ionized state case */
-template < >
+template < > inline
 Real IonFrac<0>( Real Zbar, Real T, Atom atom, Real nh ) {
   int Z = atom.Z;
   Real denominator = 0.0;
@@ -24,7 +26,7 @@ Real IonFrac<0>( Real Zbar, Real T, Atom atom, Real nh ) {
 }
 
 /* recursion */
-template < int p  >
+template < int p  > inline
 Real IonFrac( Real Zbar, Real T, Atom atom, Real nh ) {
   return IonFrac<p-1>( Zbar, T, atom, nh ) * f( T, atom, p ) / ( Zbar * nh );
 }
