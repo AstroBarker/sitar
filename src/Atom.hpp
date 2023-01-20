@@ -7,7 +7,7 @@
 
 struct Atom {
   int Z;
-  std::vector<int> g; // statistical weights. 0 is ground state
+  std::vector<int> g;    // statistical weights. 0 is ground state
   std::vector<Real> chi; // ionization potential, eV
 };
 

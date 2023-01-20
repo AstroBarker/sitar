@@ -1,0 +1,20 @@
+Standard: c++17
+
+ColumnLimit: 80
+IndentWidth: 2
+AccessModifierOffset: -1
+
+AllowAllParametersOfDeclarationOnNextLine: true
+AllowShortIfStatementsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: true
+BinPackParameters: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+SpaceInEmptyParentheses: true
+SpacesInConditionalStatement: true
+SpacesInParentheses: true
+AlignConsecutiveAssignments: true
+
+BreakBeforeBraces: Attach
+PointerAlignment: Right
+SortIncludes: Never
