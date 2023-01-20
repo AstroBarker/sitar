@@ -2,12 +2,13 @@
 #define _SAHA_HPP_
 
 #include "Abstractions.hpp"
+#include "Atom.hpp"
 #include "Constants.hpp"
 
 Real f( Real T, Atom atom, int n );
 Real Target( Real Zbar, Real T, Atom atom, Real nh );
 
-//Real SahaSolve( Real Temp, Atom atom, Real nh );
+Real SahaSolve( Real Temp, Atom atom, Real nh );
 
 template < int p > inline
 Real IonFrac( Real Zbar, Real Temp, Atom atom, Real nh );
