@@ -1,3 +1,4 @@
+#include "assert.h"
 #include <math.h>
 #include <cstdio>
 
@@ -40,4 +41,43 @@ Real Target( Real Zbar, Real T, Atom atom, Real nh ) {
   return result;
 }
 
-Real SahaSolve( Real Temp, Atom atom, Real nh ) { return 0.0; }
+Real SahaSolve( Real Zbar, Real Temp, Atom atom, Real nk ) { 
+
+  // formality
+  assert( Temp > 0.0 );
+
+  const int Z = atom.Z;
+
+  Real ion_frac; // result
+
+  //const int Z = atom.Z;
+  const Real num_states = Z + 1; //TODO: plus 1 correct?
+  int min_state = 1;
+  int max_state = num_states;
+
+  const Real Zbar_nk_inv = 1.0 / ( Zbar * nk );
+  
+  for ( int i = 1; i < Z; i++ ) {
+    const Real saha_f = std::fabs( f( Temp, atom, i ) );
+    if ( saha_f * Zbar_nk_inv > Opts::ZBARTOLINV ) { min_state = i + 1; }
+    if ( saha_f * Zbar_nk_inv < Opts::ZBARTOL ) { max_state = i; }
+  }
+
+  if ( max_state == 1 ) {
+    ion_frac = 0.0; // neutral
+    Zbar = 1.0e-6; // uncharged (but don't want division by 0)
+  } else if ( min_state == num_states ) { // TODO:
+    ion_frac = 1.0; // full ionization
+    Zbar = Z;
+  } else if ( min_state == max_state ) {
+    Zbar = min_state - 1.0;
+    ion_frac = 1.0; // only one state possible
+  } else { // fixed point solver
+    // TODO: will need to extend FPS
+    Zbar        = FixedPointSolve( Target, 0.9, Temp, atom, nk );
+    ion_frac    = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
+    
+  }
+
+  return ion_frac; 
+}
