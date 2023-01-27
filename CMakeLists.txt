@@ -22,14 +22,17 @@ project(
 #subdirs
 add_subdirectory(src)
 
-# Output libname matches target name, with the usual extensions on your system
-# add_library(libsaha 1DSaha.cpp 1DSaha.hpp )
-
-# Link each target with other targets or add options, etc.
-
 # Adding something we can run - Output name matches target name
 # add_executable(saha simple_example.cpp)
+
+include( CTest )
+option( ENALBE_UNIT_TESTS "Enable unit tests" OFF )
 
 # Make sure you link your targets with this command. It can also link libraries and
 # even flags, so linking a target that does not exist will not give a configure-time error.
 # target_link_libraries(saha PRIVATE libsaha)
+if( ENABLE_UNIT_TESTS )
+  message("\nConfiguring tests")
+  enable_testing()
+  add_subdirectory(tst)
+endif()
