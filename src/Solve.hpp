@@ -34,3 +34,23 @@ T FixedPointSolve( F target, T x0, Args... args ) {
 
   return x0;
 }
+
+template <typename T, typename F>
+T FixedPointSolve( F target, T x0 ) {
+
+  unsigned int n = 0;
+  T error        = 1.0;
+  while ( n <= Opts::MAX_ITERS && error >= Opts::FPTOL ) {
+    T x1  = target( x0 );
+    error = std::abs( Residual( target, x0 ) );
+    printf( " %d %f %f \n", n, x1, error );
+    x0 = x1;
+    n += 1;
+
+    if ( n == Opts::MAX_ITERS ) {
+      std::printf( " ! Not Converged ! \n" );
+    }
+  }
+
+  return x0;
+}

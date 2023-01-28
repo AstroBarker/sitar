@@ -10,7 +10,7 @@
 namespace Opts {
 
 constexpr unsigned int MAX_ITERS = 20;
-constexpr Real FPTOL = 1.0e-10;
+constexpr Real FPTOL = 1.0e-11;
 constexpr Real ZBARTOL = 1.0e-15;
 constexpr Real ZBARTOLINV = 1.0e15;
 

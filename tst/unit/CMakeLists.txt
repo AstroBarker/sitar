@@ -22,7 +22,7 @@ target_link_libraries(unit_tests
     Catch2::Catch2
 )
 
-#add_subdirectory(fixed_point)
+add_subdirectory(fixed_point)
 
 include(Catch)
 catch_discover_tests(unit_tests)
