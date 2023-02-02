@@ -2,6 +2,7 @@
 #define _CONSTANTS_HPP_
 
 #include <math.h> /* atan */
+#include <cmath>
 
 #include "Abstractions.hpp"
 
@@ -15,7 +16,7 @@ constexpr Real h      = 6.62607015e-27; // cgs
 constexpr Real hbar   = 1.05457182e-27; // cgs
 constexpr Real c_cgs  = 2.99792458e+10; // cgs
 constexpr Real c      = 1.0;            // natural
-constexpr Real k_saha = std::pow( 2. * PI( ) * m_e * k_B / ( h * h ), 1.5 );
+constexpr Real k_saha = std::pow( 2. * 3. * m_e * k_B / ( h * h ), 1.5 );
 
 } // namespace constants
 #endif // _CONSTANTS_HPP_

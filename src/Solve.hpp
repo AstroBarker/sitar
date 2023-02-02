@@ -10,11 +10,13 @@
 
 #include "SolverOpts.hpp"
 
+/* templated residual function */
 template <typename T, typename F, typename... Args>
 T Residual( F g, T x0, Args... args ) {
   return g( x0, args... ) - x0;
 }
 
+/* Fixed point solver templated on type, function, and args for func */
 template <typename T, typename F, typename... Args>
 T FixedPointSolve( F target, T x0, Args... args ) {
 
