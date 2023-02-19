@@ -8,7 +8,8 @@
 Real f( Real T, Atom atom, int n );
 Real Target( Real Zbar, Real T, Atom atom, Real nh );
 
-Real SahaSolve( Real Temp, Atom atom, Real nh );
+void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp, 
+                Atom atom, Real nk );
 
 template <int p>
 inline Real IonFrac( Real Zbar, Real Temp, Atom atom, Real nh );
