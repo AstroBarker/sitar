@@ -52,7 +52,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
   const int Z = atom.Z;
 
   //const int Z = atom.Z;
-  const Real num_states = Z + 1; //TODO: plus 1 correct?
+  const int num_states = Z + 1; //TODO: plus 1 correct?
   int min_state = 1;
   int max_state = num_states;
 
@@ -68,7 +68,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
     }
     if ( saha_f * Zbar_nk_inv < Opts::ZBARTOL ) { 
       max_state = i; 
-      for ( int j = i + 1; j <= num_states; j++ ) ion_frac[j+1] = 0.0;
+      for ( int j = i + 1; j <= num_states; j++ ) ion_frac[j] = 0.0;
     }
   }
 
@@ -76,7 +76,9 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
     ion_frac[0] = 1.0; // neutral
     Zbar = 1.0e-6; // uncharged (but don't want division by 0)
   } else if ( min_state == num_states ) { // TODO:
-    ion_frac[num_states] = 1.0; // full ionization
+    ion_frac[0] = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
+    std::printf("HERE1, num_states = %d\n", num_states);
+    ion_frac[num_states - 1] = 1.0; // full ionization
     Zbar = Z;
   } else if ( min_state == max_state ) {
     Zbar = min_state - 1.0;
@@ -86,6 +88,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
     Zbar        = FixedPointSolve( Target, 0.9, Temp, atom, nk );
     // TODO: loop over ionization states below
     ion_frac[0] = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
+    std::printf("HERE\n");
     ion_frac[1] = IonFrac<1>( Zbar, Temp, atom, nk ); 
   }
 
