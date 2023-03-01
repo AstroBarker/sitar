@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Atom.hpp"
+#include "CheckState.hpp"
 #include "Saha.hpp"
 #include "Solve.hpp"
 
@@ -47,7 +48,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
                 Atom atom, Real nk ) {
 
   // formality
-  assert( Temp > 0.0 );
+  CheckState( ion_frac, Temp, nk );
 
   const int Z = atom.Z;
 
@@ -85,6 +86,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
     // TODO: will need to extend FPS
     Zbar        = FixedPointSolve( Target, 0.9, Temp, atom, nk );
     // TODO: loop over ionization states below
+    // Need template loop
     ion_frac[0] = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
     ion_frac[1] = IonFrac<1>( Zbar, Temp, atom, nk ); 
   }

@@ -1,6 +1,6 @@
 # Output libname matches target name, with the usual extensions on your system
 #add_library(libsaha Saha.cpp Saha.hpp Solve.hpp Abstractions.hpp Constants.hpp )
-add_library(sahalib Saha.cpp )
+add_library(sahalib Saha.cpp CheckState.cpp )
 
 # Link each target with other targets or add options, etc.
 
