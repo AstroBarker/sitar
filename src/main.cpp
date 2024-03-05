@@ -1,9 +1,9 @@
 #include <math.h>
 #include <cstdio>
 
-#include "Atom.hpp"
-#include "Saha.hpp"
-#include "Solve.hpp"
+#include "atom.hpp"
+#include "saha.hpp"
+#include "solve.hpp"
 
 int main( int argc, char *argv[] ) {
 

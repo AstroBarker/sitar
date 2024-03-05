@@ -3,10 +3,10 @@
 #include <math.h>
 #include <vector>
 
-#include "Atom.hpp"
-#include "CheckState.hpp"
-#include "Saha.hpp"
-#include "Solve.hpp"
+#include "atom.hpp"
+#include "check_state.hpp"
+#include "saha.hpp"
+#include "solve.hpp"
 
 /* ionization function f */
 Real f( Real T, Atom atom, int n ) {

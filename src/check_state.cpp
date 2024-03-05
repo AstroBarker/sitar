@@ -9,8 +9,8 @@
 #include <cmath>
 #include <vector>
 
-#include "Abstractions.hpp"
-#include "CheckState.hpp"
+#include "abstractions.hpp"
+#include "check_state.hpp"
 
 // placeholder
 void CheckState( std::vector<Real> &IonFrac, Real T, Real nk ) {

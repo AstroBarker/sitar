@@ -1,9 +1,9 @@
-#ifndef _SAHA_HPP_
-#define _SAHA_HPP_
+#ifndef SAHA_HPP_
+#define SAHA_HPP_
 
-#include "Abstractions.hpp"
-#include "Atom.hpp"
-#include "Constants.hpp"
+#include "abstractions.hpp"
+#include "atom.hpp"
+#include "constants.hpp"
 
 Real f( Real T, Atom atom, int n );
 Real Target( Real Zbar, Real T, Atom atom, Real nh );
@@ -34,4 +34,4 @@ inline Real IonFrac( Real Zbar, Real T, Atom atom, Real nh ) {
   return IonFrac<p - 1>( Zbar, T, atom, nh ) * f( T, atom, p ) / ( Zbar * nh );
 }
 
-#endif // _SAHA_HPP_
+#endif // SAHA_HPP_

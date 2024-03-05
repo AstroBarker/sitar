@@ -1,10 +1,10 @@
-#ifndef _CONSTANTS_HPP_
-#define _CONSTANTS_HPP_
+#ifndef CONSTANTS_HPP_
+#define CONSTANTS_HPP_
 
 #include <math.h> /* atan */
 #include <cmath>
 
-#include "Abstractions.hpp"
+#include "abstractions.hpp"
 
 namespace constants {
 
@@ -19,4 +19,4 @@ constexpr Real c      = 1.0;            // natural
 constexpr Real k_saha = std::pow( 2. * 3. * m_e * k_B / ( h * h ), 1.5 );
 
 } // namespace constants
-#endif // _CONSTANTS_HPP_
+#endif // CONSTANTS_HPP_

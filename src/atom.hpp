@@ -1,9 +1,9 @@
-#ifndef _ATOM_HPP_
-#define _ATOM_HPP_
+#ifndef ATOM_HPP_
+#define ATOM_HPP_
 
 #include <vector>
 
-#include "Abstractions.hpp"
+#include "abstractions.hpp"
 
 struct Atom {
   int Z;
@@ -11,4 +11,4 @@ struct Atom {
   std::vector<Real> chi; // ionization potential, eV
 };
 
-#endif // _ATOM_HPP_
+#endif // ATOM_HPP_

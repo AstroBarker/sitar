@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <algorithm>
 
-#include "SolverOpts.hpp"
+#include "solver_opts.hpp"
 
 /* templated residual function */
 template <typename T, typename F, typename... Args>
