@@ -1,10 +1,12 @@
-# SimpleSaha
+# Sitar
+SIngle isoTope sAha solveR. Also a stringed instrument from the Indian subcontinent.
+
 playing with making a Saha ionization solver
 
 unfinished.
 
 ## Building
-To build `SimpleSaha`, simply
+To build `Sitar`, simply
 ```sh
 mkdir build && cd build
 cmake ..
