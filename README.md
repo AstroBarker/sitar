@@ -1,5 +1,5 @@
 # 1DSaha
-playing with making a one dimensional Saha ionization solver
+playing with making a Saha ionization solver
 
 unfinished.
 
