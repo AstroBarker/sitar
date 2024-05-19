@@ -1,5 +1,5 @@
-#ifndef CHECKSTATE_HPP_
-#define CHECKSTATE_HPP_
+#ifndef CHECK_STATE_HPP_
+#define CHECK_STATE_HPP_
 
 #include <vector>
 
@@ -8,4 +8,4 @@
 
 void CheckState( std::vector<Real> &IonFrac, Real T, Real nk );
 
-#endif // CHECKSTATE_HPP_
+#endif // CHECK_STATE_HPP_

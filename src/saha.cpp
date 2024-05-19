@@ -5,6 +5,7 @@
 
 #include "atom.hpp"
 #include "check_state.hpp"
+#include "constants.hpp"
 #include "saha.hpp"
 #include "solve.hpp"
 
@@ -44,11 +45,11 @@ Real Target( Real Zbar, Real T, Atom atom, Real nh ) {
   return result;
 }
 
-void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp, 
-                Atom atom, Real nk ) {
+void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, const Real temperature, 
+                const Atom atom, const Real nk ) {
 
   // formality
-  CheckState( ion_frac, Temp, nk );
+  CheckState( ion_frac, temperature, nk );
 
   const int Z = atom.Z;
 
@@ -61,7 +62,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
   
   // TODO: check indices..
   for ( int i = 1; i < Z + 1; i++ ) {
-    const Real saha_f = std::fabs( f( Temp, atom, i ) );
+    const Real saha_f = std::fabs( f( temperature, atom, i ) );
     if ( saha_f * Zbar_nk_inv > Opts::ZBARTOLINV ) { 
       min_state = i + 1;
       ion_frac[i] = 0.0;
@@ -76,19 +77,19 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
     ion_frac[0] = 1.0; // neutral
     Zbar = 1.0e-6; // uncharged (but don't want division by 0)
   } else if ( min_state == num_states ) { // TODO:
-    ion_frac[0] = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
+    ion_frac[0] = IonFrac<0>( Zbar, temperature, atom, nk ); // TODO: array
     ion_frac[num_states - 1] = 1.0; // full ionization
     Zbar = Z;
   } else if ( min_state == max_state ) {
     Zbar = min_state - 1.0;
     ion_frac[min_state] = 1.0; // only one state possible
   } else { // fixed point solver
-    const Real guess = ( Temp > 7000.0 ) ? 0.75 * Z : 0.25; // arbitrary guess: "high" Zbar above H ionization temp
-    Zbar = FixedPointAA( Target, guess, Temp, atom, nk );
+    const Real guess = ( temperature > 7000.0 ) ? 0.75 * Z : 0.25; // arbitrary guess: "high" Zbar above H ionization temp
+    Zbar = FixedPointAA( Target, guess, temperature, atom, nk );
     // TODO: loop over ionization states below
     // Need template loop. or un-template IonFrac
-    ion_frac[0] = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
-    ion_frac[1] = IonFrac<1>( Zbar, Temp, atom, nk ); 
+    ion_frac[0] = IonFrac<0>( Zbar, temperature, atom, nk ); // TODO: array
+    ion_frac[1] = IonFrac<1>( Zbar, temperature, atom, nk ); 
   }
 
 }

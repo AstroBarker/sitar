@@ -1,5 +1,5 @@
 /**
- * File    :  CheckState.cpp
+ * File    :  check_state.cpp
  * --------------
  *
  * Author  : Brandon L. Barker
