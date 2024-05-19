@@ -14,7 +14,7 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
 template <int p>
 inline Real IonFrac( Real Zbar, Real Temp, Atom atom, Real nh );
 
-/* un-ionized state case */
+/* neutral state case */
 template <>
 inline Real IonFrac<0>( Real Zbar, Real T, Atom atom, Real nh ) {
   int Z            = atom.Z;

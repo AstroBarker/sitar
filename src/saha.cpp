@@ -83,10 +83,10 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, Real Temp,
     Zbar = min_state - 1.0;
     ion_frac[min_state] = 1.0; // only one state possible
   } else { // fixed point solver
-    // TODO: will need to extend FPS
-    Zbar        = FixedPointSolve( Target, 0.9, Temp, atom, nk );
+    const Real guess = ( Temp > 7000.0 ) ? 0.75 * Z : 0.25; // arbitrary guess: "high" Zbar above H ionization temp
+    Zbar = FixedPointAA( Target, guess, Temp, atom, nk );
     // TODO: loop over ionization states below
-    // Need template loop
+    // Need template loop. or un-template IonFrac
     ion_frac[0] = IonFrac<0>( Zbar, Temp, atom, nk ); // TODO: array
     ion_frac[1] = IonFrac<1>( Zbar, Temp, atom, nk ); 
   }
