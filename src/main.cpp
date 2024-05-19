@@ -10,8 +10,8 @@ int main( int argc, char *argv[] ) {
 
   Atom H;
   H.Z = 1;
-  H.g.push_back( 1 );
   H.g.push_back( 2 );
+  H.g.push_back( 1 );
   H.chi.push_back( 13.6 );
 
   // fully ionized. works?
