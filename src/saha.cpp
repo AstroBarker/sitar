@@ -10,17 +10,17 @@
 #include "solve.hpp"
 
 /* ionization function f */
-Real f( Real T, Atom atom, int n ) {
-  Real prefix = 2.0 * ( atom.g[n] / atom.g[n - 1] ) * constants::k_saha *
+Real f( const Real T, const Atom* atom, const int n ) {
+  Real prefix = 2.0 * ( atom->g[n] / atom->g[n - 1] ) * constants::k_saha *
                 std::pow( T, 1.5 );
-  Real suffix = std::exp( -atom.chi[n - 1] / ( constants::k_Bev * T ) );
+  Real suffix = std::exp( -atom->chi[n - 1] / ( constants::k_Bev * T ) );
 
   return prefix * suffix;
 }
 
-Real Target( Real Zbar, Real T, Atom atom, Real nh ) {
+Real Target( const Real Zbar, const Real T, const Atom* atom, const Real nh ) {
   /* atom data */
-  int Z = atom.Z;
+  int Z = atom->Z;
 
   // TODO: no need for two outer loops
   Real result    = Zbar;
@@ -35,8 +35,9 @@ Real Target( Real Zbar, Real T, Atom atom, Real nh ) {
   Real denominator = 0.0;
   for ( int i = 1; i <= Z; i++ ) {
     Real inner_num = 1.0;
-    for ( int j = 1; j <= i; j++ )
+    for ( int j = 1; j <= i; j++ ) {
       inner_num *= ( i * f( T, atom, j ) );
+    }
     denominator += inner_num / std::pow( Zbar * nh, i );
   }
 
@@ -46,12 +47,13 @@ Real Target( Real Zbar, Real T, Atom atom, Real nh ) {
 }
 
 void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, const Real temperature, 
-                const Atom atom, const Real nk ) {
+                const Atom* atom, const Real nk ) {
+
 
   // formality
   CheckState( ion_frac, temperature, nk );
 
-  const int Z = atom.Z;
+  const int Z = atom->Z;
 
   //const int Z = atom.Z;
   const int num_states = Z + 1; //TODO: plus 1 correct?
@@ -88,8 +90,10 @@ void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, const Real temperature,
     Zbar = FixedPointAA( Target, guess, temperature, atom, nk );
     // TODO: loop over ionization states below
     // Need template loop. or un-template IonFrac
+    std::printf("deug: Zbar, %e\n", Zbar);
     ion_frac[0] = IonFrac<0>( Zbar, temperature, atom, nk ); // TODO: array
     ion_frac[1] = IonFrac<1>( Zbar, temperature, atom, nk ); 
+    ion_frac[2] = IonFrac<2>( Zbar, temperature, atom, nk ); 
   }
 
 }

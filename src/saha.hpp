@@ -5,19 +5,19 @@
 #include "atom.hpp"
 #include "constants.hpp"
 
-Real f( Real T, Atom atom, int n );
-Real Target( Real Zbar, Real T, Atom atom, Real nh );
+Real f( const Real T, const Atom* atom, const int n );
+Real Target( const Real Zbar, const Real T, const Atom* atom, const Real nh );
 
 void SahaSolve( std::vector<Real>& ion_frac, Real Zbar, const Real Temp, 
-                const Atom atom, const Real nk );
+                const Atom* atom, const Real nk );
 
 template <int p>
-inline Real IonFrac( Real Zbar, Real Temp, Atom atom, Real nh );
+inline Real IonFrac( const Real Zbar, const Real Temp, const Atom* atom, const Real nh );
 
 /* neutral state case */
 template <>
-inline Real IonFrac<0>( Real Zbar, Real T, Atom atom, Real nh ) {
-  int Z            = atom.Z;
+inline Real IonFrac<0>( const Real Zbar, const Real T, const Atom* atom, const Real nh ) {
+  int Z            = atom->Z;
   Real denominator = 0.0;
   for ( int i = 1; i <= Z; i++ ) {
     Real inner_num = 1.0;
@@ -30,7 +30,7 @@ inline Real IonFrac<0>( Real Zbar, Real T, Atom atom, Real nh ) {
 
 /* recursion */
 template <int p>
-inline Real IonFrac( Real Zbar, Real T, Atom atom, Real nh ) {
+inline Real IonFrac( const Real Zbar, const Real T, const Atom* atom, const Real nh ) {
   return IonFrac<p - 1>( Zbar, T, atom, nh ) * f( T, atom, p ) / ( Zbar * nh );
 }
 

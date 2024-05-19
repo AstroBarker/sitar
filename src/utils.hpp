@@ -30,7 +30,7 @@ Real powint( Real base ) {
   
 }
 
-// Ideal gas P = n k T, find n given P, T
+// Ideal gas P = n k T, find n given P, T [K]
 Real number_from_pressure_temperature( const Real P, const Real T ) {
   return P / (constants::k_B * T);
 }
