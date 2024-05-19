@@ -1,10 +1,10 @@
-# 1DSaha
+# SimpleSaha
 playing with making a Saha ionization solver
 
 unfinished.
 
 ## Building
-To build `1DSaha`, simply
+To build `SimpleSaha`, simply
 ```sh
 mkdir build && cd build
 cmake ..
