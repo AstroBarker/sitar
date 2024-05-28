@@ -113,10 +113,11 @@ void SahaSolve( std::vector<Real> &ion_frac, Real Zbar, const Real temperature,
     Zbar                = min_state - 1.0;
     ion_frac[min_state] = 1.0; // only one state possible
   } else {                     // fixed point solver
-    const Real guess =
-        ( temperature > 7000.0 )
-            ? 0.75 * Z
-            : 0.25; // arbitrary guess: "high" Zbar above H ionization temp
+    //const Real guess =
+    //    ( temperature > 7000.0 )
+    //        ? 0.75 * Z
+    //        : 0.25; // arbitrary guess: "high" Zbar above H ionization temp
+    const Real guess = 0.5 * Z;
     // Zbar = FixedPointAA( Target, guess, temperature, atom, nk, min_state,
     // max_state ); // FAILS
     Zbar = AANewton( Target, dTarget, guess, temperature, atom, nk, min_state,

@@ -83,7 +83,7 @@ int main( int argc, char *argv[] ) {
   // set up temperature, nk grid
   // Fix Pe = n_e k T = 0.1
   const Real Pe     = 0.1;
-  const Real n_grid = powint<14>( 2 );
+  const Real n_grid = powint<12>( 2 );
 
   std::vector<Real> temps( n_grid, 0.0 );
   std::vector<Real> nks( n_grid, 0.0 );
@@ -101,7 +101,6 @@ int main( int argc, char *argv[] ) {
 
   const Real T  = 0.15 * powint<4>( 10.0 );
   const Real nk = number_from_pressure_temperature( Pe, T );
-  std::printf( "T, nk = %e %e\n", T, nk );
 
   std::vector<Real> ion_frac( Ca.Z + 1, 0.0 );
   Real Zbar = Ca.Z;
@@ -117,9 +116,9 @@ int main( int argc, char *argv[] ) {
     std::fill(ion_frac.begin(), ion_frac.end(), 0); // reset ion_frac
   }
   timer.stop( );
-  std::printf( " ~ Elapsed Time: %e ns\n", timer.elapsedNanoseconds( ) );
-  std::printf( "%e\n", ion_frac[0] );
-  std::printf( "sum ion fracs %e\n",
-               std::reduce( ion_frac.begin( ), ion_frac.end( ) ) );
+  std::printf( "# Elapsed Time: %e ns\n", timer.elapsedNanoseconds( ) );
+  // std::printf( "%e\n", ion_frac[0] );
+  // std::printf( "sum ion fracs %e\n",
+  //              std::reduce( ion_frac.begin( ), ion_frac.end( ) ) );
   return 0;
 }
