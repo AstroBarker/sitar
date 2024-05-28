@@ -21,7 +21,8 @@ inline Real IonFrac( const Real Zbar, const Real Temp, const Atom *atom,
 /* neutral state case */
 template <>
 inline Real IonFrac<0>( const Real Zbar, const Real T, const Atom *atom,
-                        const Real nh, const int min_state, const int max_state ) {
+                        const Real nh, const int min_state,
+                        const int max_state ) {
   int Z            = atom->Z;
   Real denominator = 0.0;
   for ( int i = min_state; i < max_state; i++ ) {
@@ -30,7 +31,7 @@ inline Real IonFrac<0>( const Real Zbar, const Real T, const Atom *atom,
       inner_num *= ( i * f( T, atom, j ) );
     denominator += inner_num / std::pow( Zbar * nh, i );
   }
-  denominator += (min_state - 1.0);
+  denominator += ( min_state - 1.0 );
   return Zbar / denominator;
 }
 
@@ -38,7 +39,8 @@ inline Real IonFrac<0>( const Real Zbar, const Real T, const Atom *atom,
 template <int p>
 inline Real IonFrac( const Real Zbar, const Real T, const Atom *atom,
                      const Real nh, const int min_state, const int max_state ) {
-  return IonFrac<p - 1>( Zbar, T, atom, nh, min_state, max_state ) * f( T, atom, p ) / ( Zbar * nh );
+  return IonFrac<p - 1>( Zbar, T, atom, nh, min_state, max_state ) *
+         f( T, atom, p ) / ( Zbar * nh );
 }
 
 #endif // SAHA_HPP_

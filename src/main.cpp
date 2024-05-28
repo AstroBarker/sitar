@@ -107,13 +107,13 @@ int main( int argc, char *argv[] ) {
 
   Timer timer;
   timer.start( );
-  //SahaSolve( ion_frac, Zbar, T, &Ca, nk );
-  std::printf("# T [K], nk, CaI, CaII, CaIII");
-  for (int i = 0; i < n_grid; i++) {
+  // SahaSolve( ion_frac, Zbar, T, &Ca, nk );
+  std::printf( "# T [K], nk, CaI, CaII, CaIII" );
+  for ( int i = 0; i < n_grid; i++ ) {
     SahaSolve( ion_frac, Zbar, temps[i], &Ca, nks[i] );
-    std::printf("%e %e %f %f %f\n", temps[i], nks[i], ion_frac[0],
-    ion_frac[1], ion_frac[2]);
-    std::fill(ion_frac.begin(), ion_frac.end(), 0); // reset ion_frac
+    std::printf( "%e %e %f %f %f\n", temps[i], nks[i], ion_frac[0], ion_frac[1],
+                 ion_frac[2] );
+    std::fill( ion_frac.begin( ), ion_frac.end( ), 0 ); // reset ion_frac
   }
   timer.stop( );
   std::printf( "# Elapsed Time: %e ns\n", timer.elapsedNanoseconds( ) );
