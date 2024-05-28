@@ -16,6 +16,15 @@ project(
 
 # If you set any CMAKE_ variables, that can go here.
 # (But usually don't do this, except maybe for C++ standard)
+if ( NOT CMAKE_BUILD_TYPE )
+  message( "Build Type not set, defaulting to Release..." )
+  set( CMAKE_BUILD_TYPE Release )
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  message("Enabling DEBUG preprocessor macro!")
+  add_compile_definitions(DEBUG)
+endif()
 
 # Find packages go here.
 

@@ -1,5 +1,5 @@
 /**
- * File    :  Error.hpp
+ * File    :  error.hpp
  * --------------
  *
  * Author  : Brandon L. Barker
@@ -10,10 +10,9 @@
 #define ERROR_HPP_
 
 #include <stdexcept>
-#include <assert.h>     /* assert */
+#include <assert.h> /* assert */
 
-class Error : public std::runtime_error
-{
+class Error : public std::runtime_error {
  public:
   Error( const std::string &message ) : std::runtime_error( message ) {}
 };

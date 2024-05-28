@@ -16,11 +16,11 @@ class Timer {
  public:
   void start( ) {
     chrono_start = std::chrono::steady_clock::now( );
-    running  = true;
+    running      = true;
   }
   void stop( ) {
-    chrono_end  = std::chrono::steady_clock::now( );
-    running = false;
+    chrono_end = std::chrono::steady_clock::now( );
+    running    = false;
   }
 
   double elapsedNanoseconds( ) {
@@ -34,10 +34,9 @@ class Timer {
     }
 
     return std::chrono::duration_cast<std::chrono::nanoseconds>( endTime -
-                                                                  chrono_start )
+                                                                 chrono_start )
         .count( );
   }
-
 
   /* support nanoseconds up to hours (days+ requires C++20) */
   double elapsedMicroseconds( ) { return elapsedNanoseconds( ) / 1.0e3; }
