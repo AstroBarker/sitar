@@ -5,7 +5,7 @@
 
 #include "test_utils.hpp"
 
-#include "Solve.hpp"
+#include "solve.hpp"
 #include "funcs.hpp"
 
 TEST_CASE( "Fixed Point", "Solvers" ) {

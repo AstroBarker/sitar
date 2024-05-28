@@ -1,5 +1,5 @@
-#ifndef _FUNCS_HPP_
-#define _FUNCS_HPPH
+#ifndef FUNCS_HPP_
+#define FUNCS_HPP_
 
 #include <math.h>
 
@@ -8,4 +8,4 @@ double func( double x ) {
   return ( 1.0 + std::cos( x ) ) / 3.0;
 }
 
-#endif // _FUNCS_HPP_
+#endif // FUNCS_HPP_
