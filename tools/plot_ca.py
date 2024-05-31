@@ -12,7 +12,7 @@ def main():
   fig, ax = plt.subplots()
   ax.plot(temp, CaI, color="rebeccapurple", label=r"Ca")
   ax.plot(temp, CaII, color="#996633", label=r"Ca$^{+}$", ls="--")
-  ax.plot(temp, CaIII, color="#339966", label=r"Ca$^{+}$", ls=":")
+  ax.plot(temp, CaIII, color="#339966", label=r"Ca$^{++}$", ls=":")
 
   ax.legend(frameon=True)
   ax.set(xlabel=r"Temperature [10$^{4}$ K]", ylabel="Ionization Fraction")
