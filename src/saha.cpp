@@ -144,7 +144,7 @@ void SahaSolve( std::vector<Real> &ion_frac, Real Zbar, const Real temperature,
     Zbar = AANewton( Target, dTarget, guess, temperature, atom, nk, min_state,
                      max_state );
 
-    for ( int i = 0; i < Z; i++ ) {
+    for ( int i = 0; i <= Z; i++ ) {
       ion_frac[i] =
           IonFrac( i, Zbar, temperature, atom, nk, min_state, max_state );
     }
