@@ -31,4 +31,6 @@
 *.out
 *.app
 
+# project things
 tools/ca.png
+build/

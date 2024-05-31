@@ -18,10 +18,30 @@ Real f( const Real T, const Atom *atom, const int n ) {
   return prefix * suffix;
 }
 
+Real IonFrac( const int p, const Real Zbar, const Real Temp, const Atom *atom,
+              const Real nh, const int min_state, const int max_state ) {
+  if ( p == 0 ) {
+    const int Z = atom->Z;
+
+    Real denominator = 0.0;
+    for ( int i = min_state; i < max_state; i++ ) {
+      Real inner_num = 1.0;
+      for ( int j = min_state; j <= i; j++ )
+        inner_num *= ( i * f( Temp, atom, j ) );
+      denominator += inner_num / std::pow( Zbar * nh, i );
+    }
+    denominator += ( min_state - 1.0 );
+    return Zbar / denominator;
+  } else {
+    return IonFrac( p - 1, Zbar, Temp, atom, nh, min_state, max_state ) *
+           f( Temp, atom, p ) / ( Zbar * nh );
+  }
+}
+
 Real Target( const Real Zbar, const Real T, const Atom *atom, const Real nh,
              const int min_state, const int max_state ) {
   /* atom data */
-  int Z = atom->Z;
+  const int Z = atom->Z;
 
   // TODO: no need for two outer loops
   Real result    = Zbar;
@@ -105,9 +125,9 @@ void SahaSolve( std::vector<Real> &ion_frac, Real Zbar, const Real temperature,
     ion_frac[0] = 1.0;    // neutral
     Zbar        = 1.0e-6; // uncharged (but don't want division by 0)
   } else if ( min_state == num_states ) { // TODO:
-    ion_frac[0] = IonFrac<0>( Zbar, temperature, atom, nk, min_state,
-                              max_state ); // TODO: array
-    ion_frac[num_states - 1] = 1.0;        // full ionization
+    ion_frac[0] = IonFrac( 0, Zbar, temperature, atom, nk, min_state,
+                           max_state ); // TODO: array
+    ion_frac[num_states - 1] = 1.0;     // full ionization
     Zbar                     = Z;
   } else if ( min_state == max_state ) {
     Zbar                = min_state - 1.0;
@@ -120,15 +140,13 @@ void SahaSolve( std::vector<Real> &ion_frac, Real Zbar, const Real temperature,
     const Real guess = 0.5 * Z;
     // Zbar = FixedPointAA( Target, guess, temperature, atom, nk, min_state,
     // max_state ); // FAILS
+
     Zbar = AANewton( Target, dTarget, guess, temperature, atom, nk, min_state,
                      max_state );
-    //  TODO: loop over ionization states below
-    //  Need template loop. or un-template IonFrac
-    ion_frac[0] = IonFrac<0>( Zbar, temperature, atom, nk, min_state,
-                              max_state ); // TODO: array
-    ion_frac[1] =
-        IonFrac<1>( Zbar, temperature, atom, nk, min_state, max_state );
-    ion_frac[2] =
-        IonFrac<2>( Zbar, temperature, atom, nk, min_state, max_state );
+
+    for ( int i = 0; i < Z; i++ ) {
+      ion_frac[i] =
+          IonFrac( i, Zbar, temperature, atom, nk, min_state, max_state );
+    }
   }
 }
