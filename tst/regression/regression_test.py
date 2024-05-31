@@ -223,11 +223,18 @@ class Regression:
 
 # End Regression
 
-if __name__ == "__main__":
-  test = True
+
+def main():
+  """
+  run regression tests for CaI, CaII, CaIII
+  """
   reg = Regression("../../../", "./build")
-  # reg.build_code()
+  reg.build_code()
   reg.run_code()
 
   fn_gold = os.path.join(reg.data_dir, "ca.dat")
-  reg.compare_gold(fn_gold)
+  return reg.compare_gold(fn_gold)
+
+
+if __name__ == "__main__":
+  main()
