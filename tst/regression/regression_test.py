@@ -42,7 +42,7 @@ class Regression:
     executable="saha",
     run_dir="./run",
     build_type="Release",
-    num_procs=os.environ["OMP_NUM_THREADS"],
+    num_procs=1,
   ):
     self.src_dir = src_dir
     self.build_dir = os.path.relpath(build_dir)
