@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 
 import os
-from subprocess import call
+from subprocess import call, STDOUT
 import shutil
 import sys
+import warnings
 
 import numpy as np
 
 # ============
 # Utility
 # ============
-
-NUM_PROCS = 1
 
 
 def soft_equiv(val, ref, tol=1.0e-5):
@@ -39,33 +38,38 @@ class Regression:
   def __init__(
     self,
     src_dir,
-    build_dir,
-    run_dir = "./run",
+    build_dir="./build",
+    executable="saha",
+    run_dir="./run",
     build_type="Release",
-    num_procs=os.environ["OMP_NUM_PROCS"],
+    num_procs=os.environ["OMP_NUM_THREADS"],
   ):
     self.src_dir = src_dir
-    self.build_dir = build_dir
-    self.run_dir = run_dir
+    self.build_dir = os.path.relpath(build_dir)
+    self.executable = os.path.join(self.build_dir, "src", executable)
+    self.run_dir = os.path.relpath(run_dir)
     self.build_type = build_type
     self.num_procs = num_procs
+    self.data_dir = os.path.join(src_dir, "data")
 
   # End __init__
 
   def __str__(self):
-    print(f"Source Dir : {self.src_dir}")
-    print(f"Build Dir  : {self.build_dir}")
-    print(f"Build Type : {self.build_type}")
-    print(f"Num Procs  : {self.num_procs}")
+    print("========== REGRESSION TESTING ==========")
+    print(f"Source Dir  : {self.src_dir}")
+    print(f"Build Dir   : {self.build_dir}")
+    print(f"Executable  : {self.executable}")
+    print(f"Run Dir     : {self.run_dir}")
+    print(f"Build Type  : {self.build_type}")
+    print(f"Num Procs   : {self.num_procs}")
+    print("========================================")
     return "\n"
 
   # End __str__
 
   def build_code(self):
     if os.path.isdir(self.build_dir):
-      print(
-        f"BUILD_DIR '{self.build_dir}' already exists! Clean up before regression testing!"
-      )
+      print("Build dir already exists! Clean up before regression testing!")
       sys.exit(os.EX_SOFTWARE)
     os.mkdir(self.build_dir)
     os.chdir(self.build_dir)
@@ -100,6 +104,85 @@ class Regression:
 
   # End build_code
 
+  def run_code(self):
+    if not os.path.isdir(self.build_dir):
+      self.build_code()
+    if not os.path.isfile(self.executable):
+      print(f"Executable '{self.executable}' does not exist!")
+      sys.exit(os.EX_SOFTWARE)
+
+    if os.path.isdir(self.run_dir):
+      print("Run dir already exists! Clean up before regression testing!")
+      sys.exit(os.EX_SOFTWARE)
+    os.mkdir(self.run_dir)
+    os.chdir(self.run_dir)
+
+    run_cmd = []  # empty now, can accomodate mpi runs
+    outfile = open("out.dat", "w")
+    if os.path.isabs(self.executable):
+      call(run_cmd + [self.executable], stdout=outfile, stderr=STDOUT)
+    else:
+      call(
+        run_cmd + [os.path.join("..", self.executable)],
+        stdout=outfile,
+        stderr=STDOUT,
+      )
+    outfile.close()
+
+  # End run_code
+
+  def load_output(self, fn):
+    """
+    load simulation output
+    """
+    temp, nk, CaI, CaII, CaIII = np.loadtxt(fn, unpack=True)
+    return temp, nk, CaI, CaII, CaIII
+
+  # End load_output
+
+  def compare_gold(self, fn_gold):
+    """
+    compare to gold data
+    """
+
+    # check if sim data exist
+    if not os.path.isfile("out.dat"):
+      print("Simulation data do not exist!")
+      sys.exit(os.EX_SOFTWARE)
+
+    # load sim data
+    temperature, nk, CaI, CaII, CaIII = self.load_output("out.dat")
+
+    # load gold
+    temperature_gold, nk_gold, CaI_gold, CaII_gold, CaIII_gold = (
+      self.load_output(fn_gold)
+    )
+
+    # cleanup before compare
+    self.cleanup()
+
+    # comparison
+    temperature_status = np.array_equal(temperature, temperature_gold)
+    nk_status = np.array_equal(nk, nk_gold)
+    CaI_status = np.array_equal(CaI, CaI_gold)
+    CaII_status = np.array_equal(CaII, CaII_gold)
+    CaIII_status = np.array_equal(CaIII, CaIII_gold)
+
+    success = all(
+      [temperature_status, nk_status, CaI_status, CaII_status, CaIII_status]
+    )
+
+    if success:
+      print("Test Passed! :)")
+      return os.EX_OK
+    else:
+      print("Some test failed! :(")
+      print(f"Temperature : {temperature_status}")
+      print(f"nk          : {nk_status}")
+      print(f"CaI         : {CaI_status}")
+      print(f"CaII        : {CaII_status}")
+      print(f"CaIII       : {CaIII_status}")
+      return os.EX_SOFTWARE
 
   def cleanup(self):
     """
@@ -113,28 +196,38 @@ class Regression:
 
     if os.path.isabs(self.build_dir):
       print(
-        f"Absolute paths not allowed for build directory '{self.build_dir}' -- unsafe when cleaning up!"
+        "Absolute paths not allowed for build dir -- unsafe when cleaning up!"
       )
       sys.exit(os.EX_SOFTWARE)
 
     if os.path.isabs(self.run_dir):
       print(
-        f"Absolute paths not allowed for run directory '{self.run_dir}' -- unsafe when cleaning up!"
+        "Absolute paths not allowed for run dir -- unsafe when cleaning up!"
       )
       sys.exit(os.EX_SOFTWARE)
 
     if os.path.exists(self.build_dir):
       try:
         shutil.rmtree(self.build_dir)
-      except:
-        print(f"Error cleaning up build directory '{self.build_dir}'!")
+      except Exception:
+        warnings.warn(f"Error cleaning up build directory '{self.build_dir}'!")
 
     if os.path.exists(self.run_dir):
       try:
         shutil.rmtree(self.run_dir)
-      except:
-        print(f"Error cleaning up build directory '{self.run_dir}'!")
+      except Exception:
+        warnings.warn(f"Error cleaning up build directory '{self.run_dir}'!")
+
   # End cleanup
 
 
 # End Regression
+
+if __name__ == "__main__":
+  test = True
+  reg = Regression("../../../", "./build")
+  # reg.build_code()
+  reg.run_code()
+
+  fn_gold = os.path.join(reg.data_dir, "ca.dat")
+  reg.compare_gold(fn_gold)
