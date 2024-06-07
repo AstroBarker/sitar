@@ -139,7 +139,7 @@ void SahaSolve( std::vector<Real> &ion_frac, Real Zbar, const Real temperature,
     //         : 0.25; // arbitrary guess: "high" Zbar above H ionization temp
     const Real guess = 0.5 * Z;
     // Zbar = FixedPointAA( Target, guess, temperature, atom, nk, min_state,
-    // max_state ); // FAILS
+    //                      max_state );
 
     Zbar = AANewton( Target, dTarget, guess, temperature, atom, nk, min_state,
                      max_state );
