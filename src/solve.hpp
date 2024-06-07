@@ -34,6 +34,7 @@ T FixedPointAA( F target, T x0, Args... args ) {
   T xkm1, xk, xkp1;
   xk   = target( x0, args... ); // one fixed point step
   xkm1 = x0;
+  if ( std::fabs( xk - x0 ) <= Opts::FPTOL ) return xk;
   while ( n <= Opts::MAX_ITERS && error >= Opts::FPTOL ) {
     /* Anderson acceleration step */
     T alpha =
@@ -145,6 +146,7 @@ T AANewton( F target, F dTarget, T x0, Args... args ) {
   xk   = x0 - h;
   xkm1 = x0;
   T ans;
+  if ( std::fabs( xk - x0 ) <= Opts::FPTOL ) return xk;
   while ( n <= Opts::MAX_ITERS && error >= Opts::FPTOL ) {
     T hp1 = target( xk, args... ) / dTarget( xk, args... );
     T h   = target( xkm1, args... ) / dTarget( xkm1, args... );
