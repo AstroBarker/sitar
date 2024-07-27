@@ -153,7 +153,7 @@ T AANewton( F target, F dTarget, T x0, Args... args ) {
     /* Anderson acceleration step */
     T gamma = hp1 / ( hp1 - h );
 
-    xkp1  = xk - hp1 - gamma * ( xk - xkm1 - hp1 + h );
+    xkp1  = ( 1.0 - gamma ) * ( xk - hp1 ) + gamma * ( xkm1 - h );
     error = std::fabs( xk - xkp1 );
 
     xkm1 = xk;
