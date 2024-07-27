@@ -131,7 +131,7 @@ T Newton( F target, F dTarget, T x0, Args... args ) {
       printf( " %d %e %e \n", n, xn, error );
     }
   }
-  std::printf("%d \n", n);
+  std::printf( "%d \n", n );
   return x0;
 }
 
