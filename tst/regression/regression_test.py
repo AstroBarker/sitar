@@ -137,7 +137,6 @@ class CppRegressionTest(unittest.TestCase):
 
   # End run_code
 
-
   def load_output(self, fn):
     """
     load simulation output
@@ -236,8 +235,9 @@ class CppRegressionTest(unittest.TestCase):
 
   # End test_saha_solver
 
+
 def main():
-# Example usage:
+  # Example usage:
   """
   run regression tests for CaI, CaII, CaIII
   """
@@ -248,8 +248,7 @@ def main():
   executable = "./saha"
   goldfile = "/home/barker/code/sitar/data/ca.dat"
 
-
-  #Create and run the test suite
+  # Create and run the test suite
   suite = unittest.TestSuite()
   suite.addTest(
     CppRegressionTest(
@@ -259,11 +258,13 @@ def main():
       test_name="test_saha_solver",
       executable=executable,
       goldfile=goldfile,
-      num_procs=2
+      num_procs=2,
     )
   )
 
   runner = unittest.TextTestRunner(verbosity=2)
   runner.run(suite)
+
+
 if __name__ == "__main__":
   main()
