@@ -1,71 +1,35 @@
-#!/usr/bin/env python3
-
-import os
-from subprocess import call, STDOUT
+import unittest
 import shutil
+import subprocess
+import os
 import sys
 import warnings
 
 import numpy as np
 
-# ============
-# Utility
-# ============
 
-
-def soft_equiv(val, ref, tol=1.0e-5):
-  """
-  Soft equivalence of value and reference.
-  """
-  tiny = 1.0e-10
-  numerator = np.fabs(val - ref)
-  denominator = max(np.fabs(ref), tiny)
-
-  if numerator / denominator > tol:
-    return False
-  else:
-    return True
-
-
-# End soft_equiv
-
-
-class Regression:
-  """
-  regression testing class
-  """
-
+class CppRegressionTest(unittest.TestCase):
   def __init__(
     self,
-    src_dir,
+    test_name="runTest",
+    src_dir="",
     build_dir="./build",
-    executable="saha",
+    executable="./main",
     run_dir="./run",
     build_type="Release",
     num_procs=1,
+    goldfile=None,
   ):
+    super(CppRegressionTest, self).__init__(test_name)
     self.src_dir = src_dir
-    self.build_dir = os.path.relpath(build_dir)
+    self.build_dir = build_dir
+    self.build_type = build_type
     self.executable = os.path.join(self.build_dir, "src", executable)
     self.run_dir = os.path.relpath(run_dir)
-    self.build_type = build_type
     self.num_procs = num_procs
-    self.data_dir = os.path.join(src_dir, "data")
+    self.goldfile = goldfile
 
   # End __init__
-
-  def __str__(self):
-    print("========== REGRESSION TESTING ==========")
-    print(f"Source Dir  : {self.src_dir}")
-    print(f"Build Dir   : {self.build_dir}")
-    print(f"Executable  : {self.executable}")
-    print(f"Run Dir     : {self.run_dir}")
-    print(f"Build Type  : {self.build_type}")
-    print(f"Num Procs   : {self.num_procs}")
-    print("========================================")
-    return "\n"
-
-  # End __str__
 
   def build_code(self):
     if os.path.isdir(self.build_dir):
@@ -75,34 +39,65 @@ class Regression:
     os.chdir(self.build_dir)
 
     # Base configure options
-    configure_options = []
+    configure_options = ""
 
     if self.build_type == "Release":
-      configure_options.append("-DCMAKE_BUILD_TYPE=Release")
+      configure_options += "-DCMAKE_BUILD_TYPE=Release "
     elif self.build_type == "Debug":
-      configure_options.append("-DCMAKE_BUILD_TYPE=Debug")
-    else:
+      configure_options += "-DCMAKE_BUILD_TYPE=Debug "
+    else:  # TODO: more cmake build types
       print(f"Build type '{self.build_type}' not known!")
       sys.exit(os.EX_SOFTWARE)
-    configure_options.append("-DENABLE_UNIT_TESTS=OFF")
+    configure_options += "-DENABLE_UNIT_TESTS=OFF "
 
-    cmake_call = []
-    cmake_call.append("cmake")
+    cmake_call = ""
+    cmake_call += "cmake "
     for option in configure_options:
-      cmake_call.append(option)
+      cmake_call += option
     # cmake opts
-    cmake_call.append(self.src_dir)
+    cmake_call += self.src_dir
 
     # Configure
-    call(cmake_call)
+    print("Configuring the source...")
+    try:
+      subprocess.run(
+        cmake_call,
+        shell=True,
+        check=True,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+      )
+    except subprocess.CalledProcessError as e:
+      self.fail(f"Configure failed with error: {e.stderr.decode()}")
 
     # Compile
-    call(["cmake", "--build", ".", "--parallel", str(self.num_procs)])
+    print("Compiling the source...")
+    try:
+      subprocess.run(
+        "cmake --build . --parallel " + str(self.num_procs),
+        shell=True,
+        check=True,
+        stderr=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+      )
+    except subprocess.CalledProcessError as e:
+      self.fail(f"Compilation failed with error: {e.stderr.decode()}")
 
     # Return to standard directory
     os.chdir("..")
 
   # End build_code
+
+  def setUp(self):
+    """Set up the test environment by compiling the code."""
+
+    self.build_code()
+
+  # end setUp
+
+  def tearDown(self):
+    """Clean up the generated executable after the test."""
+    self.cleanup()
 
   def run_code(self):
     if not os.path.isdir(self.build_dir):
@@ -117,19 +112,31 @@ class Regression:
     os.mkdir(self.run_dir)
     os.chdir(self.run_dir)
 
-    run_cmd = []  # empty now, can accomodate mpi runs
+    run_cmd = ""  # empty now, can accomodate mpi runs
     outfile = open("out.dat", "w")
-    if os.path.isabs(self.executable):
-      call(run_cmd + [self.executable], stdout=outfile, stderr=STDOUT)
-    else:
-      call(
-        run_cmd + [os.path.join("..", self.executable)],
-        stdout=outfile,
-        stderr=STDOUT,
-      )
+    try:
+      if os.path.isabs(self.executable):
+        subprocess.run(
+          run_cmd + self.executabe,
+          shell=True,
+          check=True,
+          stdout=outfile,
+          stderr=subprocess.PIPE,
+        )
+      else:
+        subprocess.run(
+          run_cmd + os.path.join("../", self.executable),
+          shell=True,
+          check=True,
+          stdout=outfile,
+          stderr=subprocess.PIPE,
+        )
+    except subprocess.CalledProcessError as e:
+      self.fail(f"Execution failed with error: {e.stderr.decode()}")
     outfile.close()
 
   # End run_code
+
 
   def load_output(self, fn):
     """
@@ -140,7 +147,7 @@ class Regression:
 
   # End load_output
 
-  def compare_gold(self, fn_gold):
+  def compare_gold(self):
     """
     compare to gold data
     """
@@ -155,11 +162,11 @@ class Regression:
 
     # load gold
     temperature_gold, nk_gold, CaI_gold, CaII_gold, CaIII_gold = (
-      self.load_output(fn_gold)
+      self.load_output(self.goldfile)
     )
 
     # cleanup before compare
-    self.cleanup()
+    self.tearDown()
 
     # comparison
     temperature_status = np.array_equal(temperature, temperature_gold)
@@ -173,8 +180,7 @@ class Regression:
     )
 
     if success:
-      print("Test Passed! :)")
-      return os.EX_OK
+      return True
     else:
       print("Some test failed! :(")
       print(f"Temperature : {temperature_status}")
@@ -182,7 +188,9 @@ class Regression:
       print(f"CaI         : {CaI_status}")
       print(f"CaII        : {CaII_status}")
       print(f"CaIII       : {CaIII_status}")
-      return os.EX_SOFTWARE
+      return False
+
+  # End compare_gold
 
   def cleanup(self):
     """
@@ -220,21 +228,42 @@ class Regression:
 
   # End cleanup
 
+  def test_saha_solver(self):
+    """Test Saha solver on CaII ionization."""
 
-# End Regression
+    self.run_code()
+    self.assertTrue(self.compare_gold())
 
+  # End test_saha_solver
 
 def main():
+# Example usage:
   """
   run regression tests for CaI, CaII, CaIII
   """
-  reg = Regression("../../../", "./build")
-  reg.build_code()
-  reg.run_code()
+  # Define test parameters
+  src_dir = "../../../"
+  build_dir = "./build"
+  run_dir = "./run"
+  executable = "./saha"
+  goldfile = "/home/barker/code/sitar/data/ca.dat"
 
-  fn_gold = os.path.join(reg.data_dir, "ca.dat")
-  return reg.compare_gold(fn_gold)
 
+  #Create and run the test suite
+  suite = unittest.TestSuite()
+  suite.addTest(
+    CppRegressionTest(
+      src_dir=src_dir,
+      build_dir=build_dir,
+      run_dir=run_dir,
+      test_name="test_saha_solver",
+      executable=executable,
+      goldfile=goldfile,
+      num_procs=2
+    )
+  )
 
+  runner = unittest.TextTestRunner(verbosity=2)
+  runner.run(suite)
 if __name__ == "__main__":
   main()
