@@ -27,6 +27,6 @@ jobs:
             echo "$PWD/.venv/bin" >> $GITHUB_PATH
         - name: install dependencies
           run: |
-            uv pip install --system "clang-format==19.1.0"
+            uv pip install "clang-format==19.1.0"
         - name: check formatting
           run: find . -regex '.*\.\(cpp\|hpp\)' | xargs clang-format -style=file -i && git diff --exit-code --ignore-submodules
