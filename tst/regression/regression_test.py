@@ -20,7 +20,7 @@ class CppRegressionTest(unittest.TestCase):
     num_procs=1,
     goldfile=None,
   ):
-    super(CppRegressionTest, self).__init__(test_name)
+    super().__init__(test_name)
     self.src_dir = src_dir
     self.build_dir = build_dir
     self.build_type = build_type
