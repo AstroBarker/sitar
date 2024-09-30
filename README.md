@@ -27,7 +27,7 @@ Compilation and regression tests are run on each PR.
 We use `clang format` ([here](https://clang.llvm.org/docs/ClangFormat.html)) 
 and `ruff` ([here](https://docs.astral.sh/ruff/linter/)) for code cleanliness. 
 C++ rules are listed in `.clang-format`.
-The current version of `clang-format` used is `clang-format-13`, probably.
+The current version of `clang-format` used is 19.1.0.
 Simply call `tools/bash/format.sh` to format the `.hpp` and `.cpp` files.
 
 Python code linting and formatting is done with `ruff`. 
